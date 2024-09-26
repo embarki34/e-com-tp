@@ -4,7 +4,7 @@ import formidable from 'formidable';
 import path from 'path';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import { IncomingMessage } from 'http';
-import { getImageUrl } from '../routes'; // Adjust the path as needed
+import { getImageUrl } from '../route'; // Adjust the path as needed
 
 // Define the Product interface
 interface Product extends RowDataPacket {
@@ -19,12 +19,12 @@ interface Product extends RowDataPacket {
 }
 
 // Get a product by ID
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
     const productId = params.id;
 
     try {
         const query = `SELECT * FROM products WHERE product_id = ?`;
-        const [products]: [Product[], any] = await db.execute(query, [productId]);
+        const [products] = await db.execute<Product[]>(query, [productId]);
 
         if (products.length === 0) {
             return NextResponse.json({ message: 'Product not found' }, { status: 404 });
@@ -57,7 +57,10 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
             });
         });
 
-        const { product_name, description, price, stock_quantity } = fields;
+        const product_name = fields.product_name?.[0];
+        const description = fields.description?.[0];
+        const price = fields.price?.[0];
+        const stock_quantity = fields.stock_quantity?.[0];
 
         const image1_url = getImageUrl(files.image1);
         const image2_url = getImageUrl(files.image2);
@@ -74,13 +77,13 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
             description || null,
             price || null,
             stock_quantity || null,
-            image1_url || null,
-            image2_url || null,
-            image3_url || null,
+            image1_url,
+            image2_url,
+            image3_url,
             productId
         ];
 
-        const [result]: [ResultSetHeader, any] = await db.execute<ResultSetHeader>(query, values);
+        const [result] = await db.execute<ResultSetHeader>(query, values);
 
         if (result.affectedRows === 0) {
             return NextResponse.json({ message: 'Product not found' }, { status: 404 });
@@ -94,12 +97,12 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 // Delete a product by ID
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
     const productId = params.id;
 
     try {
         const query = `DELETE FROM products WHERE product_id = ?`;
-        const [result]: [ResultSetHeader, any] = await db.execute<ResultSetHeader>(query, [productId]);
+        const [result] = await db.execute<ResultSetHeader>(query, [productId]);
 
         if (result.affectedRows === 0) {
             return NextResponse.json({ message: 'Product not found' }, { status: 404 });

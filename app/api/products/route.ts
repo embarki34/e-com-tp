@@ -23,6 +23,14 @@ export const config = {
     },
 };
 
+// Export the getImageUrl function
+export const getImageUrl = (file: formidable.File | formidable.File[] | undefined): string | null => {
+    if (Array.isArray(file)) {
+        return file[0] ? `/uploads/${path.basename(file[0].filepath)}` : null;
+    }
+    return file ? `/uploads/${path.basename(file.filepath)}` : null;
+};
+
 export async function POST(req: NextRequest) {
     try {
         const form = new formidable.IncomingForm({
@@ -49,13 +57,6 @@ export async function POST(req: NextRequest) {
         if (!name || isNaN(price) || isNaN(stock_quantity)) {
             return NextResponse.json({ error: 'Name, price, and stock quantity are required fields.' }, { status: 400 });
         }
-
-        const getImageUrl = (file: formidable.File | formidable.File[] | undefined): string | null => {
-            if (Array.isArray(file)) {
-                return file[0] ? `/uploads/${path.basename(file[0].filepath)}` : null;
-            }
-            return file ? `/uploads/${path.basename(file.filepath)}` : null;
-        };
 
         const image1_url = getImageUrl(files.image1);
         const image2_url = getImageUrl(files.image2);
