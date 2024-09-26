@@ -2,25 +2,25 @@
 "use client";
 
 import Header from "@/components/Header";
-import ProductDetail from "@/components/ProductDetail";
+import ProductOrdering from "@/components/ProductOrdering"
 import Footer from "@/components/Footer";
 
-interface ProductPageProps {
+interface OrderOageProps {
     params: {
         id: string;
     };
 }
 
-const ProductPage: React.FC<ProductPageProps> = ({ params }) => {
+const OrderOage: React.FC<OrderOageProps> = ({ params }) => {
     const { id } = params;
 
     return (
         <div className="flex flex-col min-h-screen">
-            <Header title="Product Detail" />
-            <ProductDetail productId={id} />
+            <Header title="Product Ordering" />
+            <ProductOrdering productId={id} />
             <Footer />
         </div>
     );
 };
 
-export default ProductPage;
+export default OrderOage;

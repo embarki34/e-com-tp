@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import InfoIcon from "@mui/icons-material/Info";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import Link from "next/link"; // Import Link
 
 interface Product {
   product_id: number;
@@ -107,8 +108,6 @@ const ProductList: React.FC = () => {
 
       <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
         {loading ? (
-          // Loading spinner
-
           <div className="flex items-center justify-center w-full col-span-full">
             <div role="status">
               <svg
@@ -143,7 +142,7 @@ const ProductList: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <img
-                  src={`http://localhost:3000/uploads/${product.image1_url}`}
+                  src={`/uploads/${product.image1_url}`}
                   alt={product.product_name}
                   className="mb-2 w-full h-40 object-cover rounded"
                 />
@@ -155,19 +154,25 @@ const ProductList: React.FC = () => {
                 </p>
               </CardContent>
               <CardFooter className="flex justify-between space-x-2">
-                <button className="flex items-center justify-center bg-blue-500 text-white text-sm px-4 py-2 rounded-md shadow-sd hover:bg-blue-600 transition transform hover:scale-105">
-                  <InfoIcon className="mr-1 text-base" />
-                  Show
-                </button>
+                <Link href={`/products/${product.product_id}`}>
+                  <button className="flex items-center justify-center bg-blue-500 text-white text-sm px-4 py-2 rounded-md shadow-sd hover:bg-blue-600 transition transform hover:scale-105">
+                    <InfoIcon className="mr-1 text-base" />
+                    Show
+                  </button>
+                </Link>
+                <Link href={`/order/${product.product_id}`}>
                 <button className="flex items-center justify-center bg-green-500 text-white text-sm px-4 py-2 rounded-md shadow-sd hover:bg-green-600 transition transform hover:scale-105">
                   <ShoppingCartIcon className="mr-1 text-base" />
-                  Order
+                  Ordder now
                 </button>
+                </Link>
               </CardFooter>
             </Card>
           ))
         ) : (
-          <p className="text-center col-span-full">No products found.</p>
+          <div className="col-span-full text-center">
+            <p>No products found.</p>
+          </div>
         )}
       </main>
     </div>
