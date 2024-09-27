@@ -34,3 +34,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local env files
+.env*.local
+.env         # Ensure .env is ignored
+.env.test    # Add any specific env files you want to exclude
