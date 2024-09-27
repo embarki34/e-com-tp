@@ -27,7 +27,7 @@ interface CustomDialogProps {
 
 export default function CustomDialog({ order, product }: CustomDialogProps) {
   const [dialogOpen, setDialogOpen] = useState(true); // Automatically open the dialog on load
-  const orderStatusUrl = `https://localhost:3000/orderstatus/${order.order_id}`; // Construct the order status URL
+  const orderStatusUrl = `/status/${order.order_id}`; // Construct the order status URL
   const router = useRouter();
   const handleCopyUrl = () => {
     navigator.clipboard.writeText(orderStatusUrl)
@@ -41,7 +41,7 @@ export default function CustomDialog({ order, product }: CustomDialogProps) {
 
   // Optional: Close dialog after copying URL
   const handleNavigateToProduct = () => {
-    router.push(`/products/${product.product_id}`); // Navigate to the product page
+    router.push(`/status/${order.order_id}`); // Navigate to the product page
   };
 
   return (
@@ -92,7 +92,7 @@ export default function CustomDialog({ order, product }: CustomDialogProps) {
         </div>
         <DialogFooter>
           <div>
-            <Button onClick={handleNavigateToProduct}>Close</Button>
+            <Button onClick={handleNavigateToProduct}>Order Status</Button>
           </div>
         </DialogFooter>
       </DialogContent>

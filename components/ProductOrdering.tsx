@@ -105,13 +105,13 @@ const ProductOrdering: React.FC<ProductOrderingProps> = ({ productId }) => {
 
         // Fetch the order details after successful placement
         const orderResponse = await fetch(
-          `http://localhost:3000/api/orders/${result.order_id}`
+          `/api/orders/${result.order_id}`
         );
         if (orderResponse.ok) {
           const orderDetails = await orderResponse.json();
           setOrder(orderDetails);
           setOrderStatusUrl(
-            `http://localhost:3000/api/ordersstats/${result.order_id}`
+            `/api/ordersstats/${result.order_id}`
           );
           setDialogOpen(true); // Open the dialog to show order details
         } else {
@@ -171,12 +171,11 @@ const ProductOrdering: React.FC<ProductOrderingProps> = ({ productId }) => {
   }
 
   return (
-    <div className="p-6 max-w-3xl mx-auto bg-white rounded-lg shadow-md">
+    <div className="p-6 max-w-9xl mx-auto bg-white rounded-lg ">
       {/* Toaster for notifications */}
       <Toaster />
-
       <div className="flex flex-col md:flex-row items-center">
-        <div className="w-full md:w-1/2">
+        <div className="w-full md:w-full">
           <Image
             src={`/uploads/${product.image1_url}`}
             alt={product.product_name}
@@ -186,146 +185,125 @@ const ProductOrdering: React.FC<ProductOrderingProps> = ({ productId }) => {
           />
         </div>
 
-        <div className="w-full md:w-1/2 mt-6 md:mt-0 md:ml-6">
+        <div className="w-full md:w-full mt-9 md:mt-0 md:ml-6">
           <h1 className="text-3xl font-bold mb-4">{product.product_name}</h1>
           <p className="text-gray-700 mb-4">{product.description}</p>
           <p className="text-xl font-semibold mb-4">Price: ${product.price}</p>
 
           <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label
-                htmlFor="customerName"
-                className="block mb-1 font-semibold"
-              >
-                Name:
-              </label>
-              <input
-                type="text"
-                id="customerName"
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                required
-                placeholder="Enter your name"
-                className="border border-gray-300 px-4 py-2 w-full rounded-md focus:ring focus:ring-blue-300"
-              />
-            </div>
-
-            <div className="mb-3">
-              <label
-                htmlFor="customerEmail"
-                className="block mb-1 font-semibold"
-              >
-                Email:
-              </label>
-              <input
-                type="email"
-                id="customerEmail"
-                value={customerEmail}
-                onChange={(e) => setCustomerEmail(e.target.value)}
-                required
-                placeholder="Enter your email"
-                className="border border-gray-300 px-4 py-2 w-full rounded-md focus:ring focus:ring-blue-300"
-              />
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="quantity" className="block mb-1 font-semibold">
-                Quantity:
-              </label>
-              <input
-                type="number"
+            <FormControl fullWidth variant="outlined" margin="normal">
+              <InputLabel htmlFor="quantity">Quantity</InputLabel>
+              <Select
                 id="quantity"
                 value={quantity}
                 onChange={(e) => setQuantity(Number(e.target.value))}
-                min="1"
-                required
-                className="border border-gray-300 px-4 py-2 w-full rounded-md focus:ring focus:ring-blue-300"
-              />
-            </div>
+                label="Quantity"
+              >
+                {Array.from({ length: 10 }, (_, index) => (
+                  <MenuItem key={index + 1} value={index + 1}>
+                    {index + 1}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-            <div className="mb-3">
-              <label htmlFor="phoneNumber" className="block mb-1 font-semibold">
-                Phone Number:
-              </label>
-              <input
-                type="text"
-                id="phoneNumber"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                required
-                placeholder="Enter your phone number"
-                className="border border-gray-300 px-4 py-2 w-full rounded-md focus:ring focus:ring-blue-300"
-              />
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="state" className="block mb-1 font-semibold">
-                State:
-              </label>
-              <input
-                type="text"
-                id="state"
-                value={state}
-                onChange={(e) => setState(e.target.value)}
-                required
-                placeholder="Enter your state"
-                className="border border-gray-300 px-4 py-2 w-full rounded-md focus:ring focus:ring-blue-300"
-              />
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="district" className="block mb-1 font-semibold">
-                District:
-              </label>
-              <input
-                type="text"
-                id="district"
-                value={district}
-                onChange={(e) => setDistrict(e.target.value)}
-                required
-                placeholder="Enter your district"
-                className="border border-gray-300 px-4 py-2 w-full rounded-md focus:ring focus:ring-blue-300"
-              />
-            </div>
-
-            {/* Payment Method Selection */}
-            <FormControl fullWidth variant="outlined">
-              <InputLabel id="payment-method-label">Payment Method</InputLabel>
+            <FormControl fullWidth variant="outlined" margin="normal">
+              <InputLabel htmlFor="payment-method">Payment Method</InputLabel>
               <Select
-                labelId="payment-method-label"
+                id="payment-method"
                 value={paymentMethod}
                 onChange={(e) => setPaymentMethod(e.target.value)}
                 label="Payment Method"
               >
                 <MenuItem value="Credit Card">
-                  <CreditCardIcon className="mr-2" />
-                  Credit Card
+                  <CreditCardIcon /> Credit Card
                 </MenuItem>
                 <MenuItem value="Cash on Delivery">
-                  <CashIcon className="mr-2" />
-                  Cash on Delivery
+                  <CashIcon /> Cash on Delivery
                 </MenuItem>
               </Select>
             </FormControl>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className={`mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            >
-              {loading ? "Placing Order..." : "Place Order"}
-            </button>
+            <div className="flex flex-col mt-4">
+              
+              <input
+                placeholder="your name"
+                type="text"
+                id="customer-name"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                required
+                className="border rounded-md p-3"
+              />
+
+              <label htmlFor="customer-email" className="mb-2 mt-4">
+                
+              </label>
+              <input
+              placeholder="Your Email"
+                type="email"
+                id="customer-email"
+                value={customerEmail}
+                onChange={(e) => setCustomerEmail(e.target.value)}
+                required
+                className="border rounded-md p-3"
+              />
+
+              <label htmlFor="phone-number" className="mb-2 mt-4">
+                
+              </label>
+              <input
+              placeholder="Phone Number"
+                type="tel"
+                id="phone-number"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                required
+                className="border rounded-md p-3"
+              />
+
+              <label htmlFor="state" className="mb-2 mt-4">
+                
+              </label>
+              <input
+                placeholder="State (Wilaya)"
+                type="text"
+                id="state"
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+                required
+                className="border rounded-md p-3"
+              />
+
+              <label htmlFor="district" className="mb-2 mt-4">
+                
+              </label>
+              <input
+              placeholder="District (baladeya)"
+                type="text"
+                id="district"
+                value={district}
+                onChange={(e) => setDistrict(e.target.value)}
+                required
+                className="border rounded-md p-3"
+              />
+            </div>
+
+            <div className="mt-6">
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={loading}
+              >
+                {loading ? "Placing Order..." : "Place Order"}
+              </Button>
+            </div>
           </form>
         </div>
       </div>
 
-      {/* Dialog for Order Details */}
-      {order && product && (
-        <CustomDialog order={order} product={product} />
-      )}
-
+      {order && product && <CustomDialog order={order} product={product} />}
     </div>
   );
 };

@@ -23,7 +23,7 @@ const ProductDetail = ({ productId }: { productId: string | undefined }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:3000/api/products/${productId}`
+          `/api/products/${productId}`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");

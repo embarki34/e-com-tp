@@ -46,6 +46,13 @@ const Navbar = () => {
                                 Products
                             </Link>
                         </li>
+                        <li>
+                            <Link href="/status" className={`block py-2 px-3 rounded md:p-0 ${
+                                pathname === '/status' ? 'text-blue-700' : 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent '
+                            } dark:text-white md:dark:text-blue-500`} aria-current={pathname === '/status' ? 'page' : undefined}>
+                                Status
+                            </Link>
+                        </li>
                     </ul>
                 </div>
             </div>
