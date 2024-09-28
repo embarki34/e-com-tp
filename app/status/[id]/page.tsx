@@ -13,7 +13,8 @@ interface StatusPageProps {
 
 const StatusPageId = ({ params: { id } }: StatusPageProps) => {
     return (
-        <div className="flex flex-col min-h-screen w-full">
+        <div className="flex flex-col min-h-screen w-full dark:bg-gray-800">
+        
             <Header title="Order Status" />
             <OrderStatusId orderId={id} />
             <Footer />

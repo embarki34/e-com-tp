@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import Marquee from "@/components/magicui/marquee";
@@ -27,17 +28,16 @@ const ReviewCard = ({
     <figure
       className={cn(
         "relative flex flex-col items-start w-64 cursor-pointer overflow-hidden rounded-2xl border p-4",
-        // light styles
+        // Light mode styles
         "border-gray-950/[.1] bg-gray-950/[.01] hover:bg-gray-950/[.05]",
-        // dark styles
+        // Dark mode styles
         "dark:border-gray-50/[.1] dark:bg-gray-50/[.10] dark:hover:bg-gray-50/[.15]"
       )}
     >
       <img
-        className="w-full h-32 object-cover rounded-lg mb-2" // Larger image with rounded corners
+        className="w-full h-32 object-cover rounded-lg mb-2"
         alt=""
-        // Assuming your images are stored in 'public/uploads/<image_filename>'
-        src={`/uploads/${img}`} // Adjusting the image source to point to the uploads directory
+        src={`/uploads/${img}`}
       />
       <div className="flex flex-col">
         <figcaption className="text-sm font-medium dark:text-white">
@@ -45,7 +45,7 @@ const ReviewCard = ({
         </figcaption>
         <p className="text-xs font-medium dark:text-white/40">{username}</p>
       </div>
-      <blockquote className="mt-2 text-sm">{body}</blockquote>
+      <blockquote className="mt-2 text-sm dark:text-white/60">{body}</blockquote>
     </figure>
   );
 };
@@ -87,37 +87,37 @@ export function MarqueeDemo() {
   }
 
   return (
-    <div className="relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-background">
+    <div className="relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-background dark:bg-gray-800/50">
       <div>
-        <h1 className="text-center text-4xl font-bold my-4 text-black">
+        <h1 className="text-center text-4xl font-bold my-4 text-black dark:text-white">
           Our Products
         </h1>
       </div>
 
-      <Marquee pauseOnHover className="[--duration:15s]">
+      <Marquee pauseOnHover className="[--duration:60s]">
         {firstRow.map((product) => (
           <ReviewCard
             key={product.product_id}
-            img={product.image1_url} // The image filename must match the actual file in uploads
+            img={product.image1_url}
             name={product.product_name}
-            username={`${product.price} DA`} // Use price for display (modify as needed)
+            username={`${product.price} DA`}
             body={product.description}
           />
         ))}
       </Marquee>
-      <Marquee reverse pauseOnHover className="[--duration:15s]">
+      <Marquee reverse pauseOnHover className="[--duration:60s]">
         {secondRow.map((product) => (
           <ReviewCard
             key={product.product_id}
-            img={product.image1_url} // The image filename must match the actual file in uploads
+            img={product.image1_url}
             name={product.product_name}
-            username={`$${product.price}`} // Use price for display (modify as needed)
+            username={`$${product.price} DA`}
             body={product.description}
           />
         ))}
       </Marquee>
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-white dark:from-background"></div>
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-white dark:from-background"></div>
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-white dark:from-gray-800"></div>
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-white dark:from-gray-800"></div>
     </div>
   );
 }

@@ -142,7 +142,7 @@ const ProductOrdering: React.FC<ProductOrderingProps> = ({ productId }) => {
 
   if (productLoading) {
     return (
-      <div className="flex items-center justify-center w-full h-screen">
+      <div className="flex items-center justify-center w-full h-screen dark:bg-gray-800">
         <div role="status">
           <svg
             aria-hidden="true"
@@ -171,140 +171,130 @@ const ProductOrdering: React.FC<ProductOrderingProps> = ({ productId }) => {
   }
 
   return (
-    <div className="p-6 max-w-9xl mx-auto bg-white rounded-lg ">
-      {/* Toaster for notifications */}
-      <Toaster />
-      <div className="flex flex-col md:flex-row items-center">
-        <div className="w-full md:w-full">
-          <Image
-            src={`/uploads/${product.image1_url}`}
-            alt={product.product_name}
-            width={500}
-            height={500}
-            className="rounded-lg shadow-lg"
-          />
-        </div>
-
-        <div className="w-full md:w-full mt-9 md:mt-0 md:ml-6">
-          <h1 className="text-3xl font-bold mb-4">{product.product_name}</h1>
-          <p className="text-gray-700 mb-4">{product.description}</p>
-          <p className="text-xl font-semibold mb-4">Price: ${product.price}</p>
-
-          <form onSubmit={handleSubmit}>
-            <FormControl fullWidth variant="outlined" margin="normal">
-              <InputLabel htmlFor="quantity">Quantity</InputLabel>
-              <Select
-                id="quantity"
-                value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
-                label="Quantity"
-              >
-                {Array.from({ length: 10 }, (_, index) => (
-                  <MenuItem key={index + 1} value={index + 1}>
-                    {index + 1}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <FormControl fullWidth variant="outlined" margin="normal">
-              <InputLabel htmlFor="payment-method">Payment Method</InputLabel>
-              <Select
-                id="payment-method"
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                label="Payment Method"
-              >
-                <MenuItem value="Credit Card">
-                  <CreditCardIcon /> Credit Card
-                </MenuItem>
-                <MenuItem value="Cash on Delivery">
-                  <CashIcon /> Cash on Delivery
-                </MenuItem>
-              </Select>
-            </FormControl>
-
-            <div className="flex flex-col mt-4">
-              
-              <input
-                placeholder="your name"
-                type="text"
-                id="customer-name"
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                required
-                className="border rounded-md p-3"
-              />
-
-              <label htmlFor="customer-email" className="mb-2 mt-4">
-                
-              </label>
-              <input
-              placeholder="Your Email"
-                type="email"
-                id="customer-email"
-                value={customerEmail}
-                onChange={(e) => setCustomerEmail(e.target.value)}
-                required
-                className="border rounded-md p-3"
-              />
-
-              <label htmlFor="phone-number" className="mb-2 mt-4">
-                
-              </label>
-              <input
-              placeholder="Phone Number"
-                type="tel"
-                id="phone-number"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                required
-                className="border rounded-md p-3"
-              />
-
-              <label htmlFor="state" className="mb-2 mt-4">
-                
-              </label>
-              <input
-                placeholder="State (Wilaya)"
-                type="text"
-                id="state"
-                value={state}
-                onChange={(e) => setState(e.target.value)}
-                required
-                className="border rounded-md p-3"
-              />
-
-              <label htmlFor="district" className="mb-2 mt-4">
-                
-              </label>
-              <input
-              placeholder="District (baladeya)"
-                type="text"
-                id="district"
-                value={district}
-                onChange={(e) => setDistrict(e.target.value)}
-                required
-                className="border rounded-md p-3"
-              />
-            </div>
-
-            <div className="mt-6">
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                disabled={loading}
-              >
-                {loading ? "Placing Order..." : "Place Order"}
-              </Button>
-            </div>
-          </form>
-        </div>
+    <div className="p-6 max-w-9xl mx-auto bg-white dark:bg-gray-800 rounded-lg">
+    {/* Toaster for notifications */}
+    <Toaster />
+    <div className="flex flex-col md:flex-row items-center">
+      <div className="w-full md:w-full">
+        <Image
+          src={`/uploads/${product.image1_url}`}
+          alt={product.product_name}
+          width={500}
+          height={500}
+          className="rounded-lg shadow-lg"
+        />
       </div>
-
-      {order && product && <CustomDialog order={order} product={product} />}
+  
+      <div className="w-full md:w-full mt-9 md:mt-0 md:ml-6">
+        <h1 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">{product.product_name}</h1>
+        <p className="text-gray-700 dark:text-gray-300 mb-4">{product.description}</p>
+        <p className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Price: ${product.price}</p>
+  
+        <form onSubmit={handleSubmit}>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <InputLabel htmlFor="quantity" className="text-gray-700 dark:text-gray-300">Quantity</InputLabel>
+            <Select
+              id="quantity"
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              label="Quantity"
+              className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            >
+              {Array.from({ length: 10 }, (_, index) => (
+                <MenuItem key={index + 1} value={index + 1} className="text-gray-900 dark:text-white">
+                  {index + 1}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+  
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <InputLabel htmlFor="payment-method" className="text-gray-700 dark:text-gray-300">Payment Method</InputLabel>
+            <Select
+              id="payment-method"
+              value={paymentMethod}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+              label="Payment Method"
+              className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            >
+              <MenuItem value="Credit Card" className="text-gray-900 dark:text-white">
+                <CreditCardIcon /> Credit Card
+              </MenuItem>
+              <MenuItem value="Cash on Delivery" className="text-gray-900 dark:text-white">
+                <CashIcon /> Cash on Delivery
+              </MenuItem>
+            </Select>
+          </FormControl>
+  
+          <div className="flex flex-col mt-4">
+            <input
+              placeholder="Your Name"
+              type="text"
+              id="customer-name"
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+              required
+              className="border rounded-md p-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+  
+            <input
+              placeholder="Your Email"
+              type="email"
+              id="customer-email"
+              value={customerEmail}
+              onChange={(e) => setCustomerEmail(e.target.value)}
+              required
+              className="border rounded-md p-3 mt-4 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+  
+            <input
+              placeholder="Phone Number"
+              type="tel"
+              id="phone-number"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              required
+              className="border rounded-md p-3 mt-4 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+  
+            <input
+              placeholder="State (Wilaya)"
+              type="text"
+              id="state"
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+              required
+              className="border rounded-md p-3 mt-4 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+  
+            <input
+              placeholder="District (Baladeya)"
+              type="text"
+              id="district"
+              value={district}
+              onChange={(e) => setDistrict(e.target.value)}
+              required
+              className="border rounded-md p-3 mt-4 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+          </div>
+  
+          <div className="mt-6">
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
+              className="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500 dark:hover:bg-blue-600"
+            >
+              {loading ? "Placing Order..." : "Place Order"}
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
+  
+    {order && product && <CustomDialog order={order} product={product} />}
+  </div>
   );
 };
 

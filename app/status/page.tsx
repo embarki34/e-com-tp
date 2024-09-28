@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 
 const StatusPage = () => {
     return (
-        <div className="flex flex-col min-h-screen w-full">
+        <div className="flex flex-col min-h-screen w-full dark:bg-gray-800">
             <Header title="Order Status" />
             <OrderStatus />
             <Footer />

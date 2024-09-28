@@ -42,9 +42,9 @@ CREATE TABLE Orders (
 -- Insert example data into Products table
 INSERT INTO Products (product_name, description, price, stock_quantity, image1_url, image2_url, image3_url)
 VALUES
-('Product 1', 'Description for product 1', 19.99, 50, 'img1_url_1.jpg', 'img1_url_2.jpg', 'img1_url_3.jpg'),
-('Product 2', 'Description for product 2', 29.99, 30, 'img2_url_1.jpg', 'img2_url_2.jpg', 'img2_url_3.jpg'),
-('Product 3', 'Description for product 3', 49.99, 10, 'img3_url_1.jpg', 'img3_url_2.jpg', 'img3_url_3.jpg');
+('OnePlus 7t Pro', 'Description for product 1', 19.99, 50, 'img1_url_1.jpg', 'img1_url_2.jpg', 'img1_url_3.jpg'),
+('Samsung Galaxy S23 Ultra', 'Description for product 2', 29.99, 30, 'img2_url_1.jpg', 'img2_url_2.jpg', 'img2_url_3.jpg'),
+('iPhone 15 Pro Max', 'Description for product 3', 49.99, 10, 'img3_url_1.jpg', 'img3_url_2.jpg', 'img3_url_3.jpg');
 
 -- Insert example data into Orders table
 INSERT INTO Orders (product_id, customer_name, customer_email, quantity, total_price, payment_method, status)

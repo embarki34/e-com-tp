@@ -8,7 +8,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ title }) => {
     return (
-        <header className="bg-white text-black p-4 text-center">
+        <header className="bg-white text-black p-4 text-center dark:bg-gray-800 dark:text-white">
             <h1 className="text-4xl font-bold">{title}</h1> {/* Use the title prop */}
         </header>
     );

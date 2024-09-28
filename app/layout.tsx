@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Navbar from "@/components/navbar";
+import ClientLayout from "./ClientLayout"; // Import the ClientLayout component
+import { ThemeProvider } from "@/providers/providers"; // Import ThemeProvider
+import { Toaster } from 'sonner';
+
+
 
 
 const geistSans = localFont({
@@ -9,6 +13,7 @@ const geistSans = localFont({
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -26,15 +31,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Navbar/>
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ThemeProvider> {/* Wrap the ClientLayout with ThemeProvider */}
+          <ClientLayout>{children}<Toaster /></ClientLayout> {/* Use the ClientLayout component */}
+        </ThemeProvider>
       </body>
     </html>
-
   );
 }
