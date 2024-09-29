@@ -3,10 +3,16 @@ import localFont from "next/font/local";
 import "./globals.css";
 import ClientLayout from "./ClientLayout"; // Import the ClientLayout component
 import { ThemeProvider } from "@/providers/providers"; // Import ThemeProvider
-import { Toaster } from 'sonner';
-
-
-
+import { Toaster } from "sonner";
+import {
+  ClerkProvider,
+  SignIn,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
+import middleware from "../middleware";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,9 +38,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ThemeProvider> {/* Wrap the ClientLayout with ThemeProvider */}
-          <ClientLayout>{children}<Toaster /></ClientLayout> {/* Use the ClientLayout component */}
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <ThemeProvider>
+          <ClientLayout>
+            {children}
+            <Toaster />
+          </ClientLayout>
         </ThemeProvider>
       </body>
     </html>
