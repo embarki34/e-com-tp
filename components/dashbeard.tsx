@@ -24,7 +24,7 @@ const Dashboard = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
-  const handleTabChange = (tab) => {
+  const handleTabChange = (tab: React.SetStateAction<string>) => {
     setActiveTab(tab);
   };
 
