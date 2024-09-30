@@ -1,9 +1,10 @@
 // app/admin/layout.tsx
-import { ClerkProvider, SignedIn, SignedOut, SignIn, SignOutButton } from "@clerk/nextjs";
-import { redirect } from 'next/navigation';
+import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
-import ClientLayout from "../ClientLayout"; // Import ClientLayout if needed
 import { ThemeProvider } from "@/providers/providers";
+import dynamic from 'next/dynamic';
+
+const AuthCheck = dynamic(() => import('./AuthCheck'), { ssr: false });
 
 export const metadata = {
   title: "Admin Dashboard",
@@ -20,19 +21,8 @@ export default function AdminLayout({
       <html lang="en">
         <body className="antialiased">
           <ThemeProvider>
-            {/* Protect admin routes */}
-            <SignedIn>
-              <ClientLayout>
-                
-                {children}
-                <Toaster />
-              </ClientLayout>
-            </SignedIn>
-            <SignedOut>
-              {/* Redirect to sign-in page if not signed in */}
-              <SignIn routing="hash"  />
-              
-            </SignedOut>
+            <AuthCheck>{children}</AuthCheck>
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>

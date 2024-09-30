@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/utils/db';
-import formidable from 'formidable';
 import path from 'path';
+import { writeFile } from 'fs/promises';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
-import { IncomingMessage } from 'http';
-import { getImageUrl } from '../route'; // Adjust the path as needed
+import fs from 'fs';
 
 // Define the Product interface
 interface Product extends RowDataPacket {
@@ -40,48 +39,53 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 // Update a product by ID
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
     const productId = params.id;
-
-    const form = new formidable.IncomingForm({
-        uploadDir: path.join(process.cwd(), 'public', 'uploads'),
-        keepExtensions: true,
-        multiples: true,
-    });
+    const uploadDir = path.join(process.cwd(), 'public/uploads');
+    if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+    }
 
     try {
-        const nodeRequest = req as unknown as IncomingMessage;
+        const formData = await req.formData();
 
-        const { fields, files }: { fields: formidable.Fields; files: formidable.Files } = await new Promise((resolve, reject) => {
-            form.parse(nodeRequest, (err, fields, files) => {
-                if (err) reject(err);
-                resolve({ fields, files });
-            });
+        const updates: string[] = [];
+        const values: any[] = [];
+
+        // Process text fields
+        ['product_name', 'description', 'price', 'stock_quantity'].forEach(field => {
+            const value = formData.get(field);
+            if (value !== null && value !== undefined && value !== '') {
+                updates.push(`${field} = ?`);
+                values.push(field === 'price' ? parseFloat(value as string) : 
+                            field === 'stock_quantity' ? parseInt(value as string, 10) : 
+                            value);
+            }
         });
 
-        const product_name = fields.product_name?.[0];
-        const description = fields.description?.[0];
-        const price = fields.price?.[0];
-        const stock_quantity = fields.stock_quantity?.[0];
+        // Process image uploads
+        for (let i = 1; i <= 3; i++) {
+            const file = formData.get(`image${i}`) as File | null;
+            if (file instanceof File) {
+                const buffer = await file.arrayBuffer();
+                const filename = Date.now() + '-' + file.name.replace(/\s+/g, '-');
+                const filepath = path.join(uploadDir, filename);
+                await writeFile(filepath, Buffer.from(buffer));
+                updates.push(`image${i}_url = ?`);
+                values.push(filename);
+            }
+        }
 
-        const image1_url = getImageUrl(files.image1);
-        const image2_url = getImageUrl(files.image2);
-        const image3_url = getImageUrl(files.image3);
+        // If no fields were provided for update, return early
+        if (updates.length === 0) {
+            return NextResponse.json({ message: 'No fields to update' }, { status: 400 });
+        }
 
+        // Construct the final SQL query
         const query = `
             UPDATE products 
-            SET product_name = ?, description = ?, price = ?, stock_quantity = ?, 
-                image1_url = ?, image2_url = ?, image3_url = ? 
+            SET ${updates.join(', ')} 
             WHERE product_id = ?
         `;
-        const values = [
-            product_name || null,
-            description || null,
-            price || null,
-            stock_quantity || null,
-            image1_url,
-            image2_url,
-            image3_url,
-            productId
-        ];
+        values.push(productId);
 
         const [result] = await db.execute<ResultSetHeader>(query, values);
 
@@ -97,7 +101,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 // Delete a product by ID
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
     const productId = params.id;
 
     try {

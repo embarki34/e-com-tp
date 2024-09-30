@@ -49,7 +49,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     }
 
     try {
-        const [result] = await db.query<ResultSetHeader>(
+        const [result] = await db.execute<ResultSetHeader>(
             'UPDATE Orders SET status = ? WHERE order_id = ?',
             [status, orderId]
         );

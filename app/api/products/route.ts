@@ -1,9 +1,11 @@
+// app/api/products/route.ts
+
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/utils/db';
-import formidable from 'formidable';
 import path from 'path';
+import { writeFile } from 'fs/promises';
+import { db } from '@/utils/db'; // Adjust the import based on your db setup
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
-import { IncomingMessage } from 'http';
+import fs from 'fs';
 
 // Define the Product interface
 interface Product extends RowDataPacket {
@@ -17,67 +19,67 @@ interface Product extends RowDataPacket {
     image3_url: string | null;
 }
 
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};
-
-// Export the getImageUrl function
-export const getImageUrl = (file: formidable.File | formidable.File[] | undefined): string | null => {
-    if (Array.isArray(file)) {
-        return file[0] ? `/uploads/${path.basename(file[0].filepath)}` : null;
+// Handle POST request for creating a product
+export async function POST(request: NextRequest) {
+    const uploadDir = path.join(process.cwd(), 'public/uploads');
+    if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
     }
-    return file ? `/uploads/${path.basename(file.filepath)}` : null;
-};
 
-export async function POST(req: NextRequest) {
     try {
-        const form = new formidable.IncomingForm({
-            uploadDir: path.join(process.cwd(), 'public', 'uploads'),
-            keepExtensions: true,
-            multiples: true,
-        });
+        const formData = await request.formData();
+        console.log("Received form data:");
 
-        // Convert Next.js Request into Node.js IncomingMessage
-        const nodeRequest = req as unknown as IncomingMessage;
+        const productData: any = {};
+        const imageUrls: string[] = [];
 
-        const { fields, files }: { fields: formidable.Fields; files: formidable.Files } = await new Promise((resolve, reject) => {
-            form.parse(nodeRequest, (err, fields, files) => {
-                if (err) reject(err);
-                resolve({ fields, files });
-            });
-        });
-
-        const name = fields.name?.[0] ?? '';
-        const description = fields.description?.[0] ?? null;
-        const price = parseFloat(fields.price?.[0] ?? '0');
-        const stock_quantity = parseInt(fields.stock_quantity?.[0] ?? '0', 10);
-
-        if (!name || isNaN(price) || isNaN(stock_quantity)) {
-            return NextResponse.json({ error: 'Name, price, and stock quantity are required fields.' }, { status: 400 });
+        for (let [key, value] of formData.entries()) {
+            console.log(key, typeof value, value);
+            if (value instanceof File) {
+                const buffer = await value.arrayBuffer();
+                const filename = Date.now() + '-' + value.name.replace(/\s+/g, '-');
+                const filepath = path.join(uploadDir, filename);
+                await writeFile(filepath, Buffer.from(buffer));
+                imageUrls.push(filename);
+            } else {
+                productData[key] = value;
+            }
         }
 
-        const image1_url = getImageUrl(files.image1);
-        const image2_url = getImageUrl(files.image2);
-        const image3_url = getImageUrl(files.image3);
+        // Add image URLs to productData
+        for (let i = 0; i < imageUrls.length; i++) {
+            productData[`image${i + 1}_url`] = imageUrls[i];
+        }
 
+        // Insert product into database
         const query = `
             INSERT INTO products (product_name, description, price, stock_quantity, image1_url, image2_url, image3_url) 
             VALUES (?, ?, ?, ?, ?, ?, ?)
         `;
-        const values = [name, description, price, stock_quantity, image1_url, image2_url, image3_url];
+        const values = [
+            productData.product_name,
+            productData.description,
+            parseFloat(productData.price),
+            parseInt(productData.stock_quantity),
+            productData.image1_url || null,
+            productData.image2_url || null,
+            productData.image3_url || null
+        ];
 
         const [result] = await db.execute<ResultSetHeader>(query, values);
 
-        return NextResponse.json({ message: 'Product created successfully', insertId: result.insertId });
+        return NextResponse.json({ 
+            success: true, 
+            message: 'Product created successfully', 
+            productId: result.insertId 
+        });
     } catch (error) {
-        console.error('Error creating product:', error);
-        return NextResponse.json({ error: 'Failed to create product' }, { status: 500 });
+        console.error('Error processing product data:', error);
+        return NextResponse.json({ success: false, error: 'Failed to process product data' }, { status: 500 });
     }
-}
+};
 
-// Get all products with updated image URLs
+// Handle GET request to retrieve all products
 export async function GET() {
     try {
         const query = `
@@ -87,16 +89,10 @@ export async function GET() {
         `;
         const [products] = await db.execute<Product[]>(query);
 
-        const updatedProducts = products.map((product) => ({
-            ...product,
-            image1_url: product.image1_url || null,
-            image2_url: product.image2_url || null,
-            image3_url: product.image3_url || null,
-        }));
-
-        return NextResponse.json(updatedProducts);
+        // Return products without modifying the image URLs
+        return NextResponse.json(products);
     } catch (error) {
         console.error('Error fetching products:', error);
         return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
     }
-}
+};
