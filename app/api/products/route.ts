@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
         const productData: any = {};
         const imageUrls: string[] = [];
 
-        for (let [key, value] of formData.entries()) {
+        for (const [key, value] of Array.from(formData.entries())) {
             console.log(key, typeof value, value);
             if (value instanceof File) {
                 const buffer = await value.arrayBuffer();

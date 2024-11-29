@@ -46,6 +46,7 @@ export async function POST(request: Request) {
     } catch (error) {
         // Type assertion for error
         const message = (error as Error).message;
+        console.error('Error creating order:', message);
         return NextResponse.json({ message: 'Error creating order', error: message }, { status: 500 });
     }
 }

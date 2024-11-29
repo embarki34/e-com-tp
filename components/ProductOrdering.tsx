@@ -115,7 +115,8 @@ const ProductOrdering: React.FC<ProductOrderingProps> = ({ productId }) => {
           );
           setDialogOpen(true); // Open the dialog to show order details
         } else {
-          toast.error("Failed to fetch order details");
+          const result = await orderResponse.json();
+          toast.error(result.message || "Failed to fetch order details");
         }
       } else {
         const result = await response.json();
