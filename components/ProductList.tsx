@@ -139,6 +139,7 @@ const ProductList: React.FC = () => {
                 <CardTitle className="font-semibold">
                   {product.product_name}
                 </CardTitle>
+
               </CardHeader>
               <CardContent>
                 <img
@@ -146,9 +147,15 @@ const ProductList: React.FC = () => {
                   alt={product.product_name}
                   className="mb-2 w-full h-40 object-cover rounded"
                 />
-                <CardDescription className="mb-1">
-                  {product.description}
-                </CardDescription>
+
+                <div className="flex flex-col space-y-2">
+                  <CardDescription className="text-gray-700">
+                    {product.description}
+                  </CardDescription>
+                  <CardDescription className="text-sm font-semibold text-green-600">
+                    In stock: {product.stock_quantity}
+                  </CardDescription>
+                </div>
                 <p className="text-lg font-bold">
                   {parseFloat(product.price).toFixed(2)} DA
                 </p>
@@ -161,10 +168,10 @@ const ProductList: React.FC = () => {
                   </button>
                 </Link>
                 <Link href={`/order/${product.product_id}`}>
-                <button className="flex items-center justify-center bg-green-500 text-white text-sm px-4 py-2 rounded-md shadow-sd hover:bg-green-600 transition transform hover:scale-105">
-                  <ShoppingCartIcon className="mr-1 text-base" />
-                  Ordder now
-                </button>
+                  <button className="flex items-center justify-center bg-green-500 text-white text-sm px-4 py-2 rounded-md shadow-sd hover:bg-green-600 transition transform hover:scale-105">
+                    <ShoppingCartIcon className="mr-1 text-base" />
+                    Ordder now
+                  </button>
                 </Link>
               </CardFooter>
             </Card>
